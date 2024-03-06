@@ -1,5 +1,5 @@
 import streamlit as st
-# from streamlit_text_rating.st_text_rater import st_text_rater
+from streamlit_text_rating.st_text_rater import st_text_rater
 from streamlit.components.v1 import html
 import fitz  # PyMuPDF
 from pptx import Presentation
