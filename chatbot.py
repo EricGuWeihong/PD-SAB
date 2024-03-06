@@ -129,14 +129,3 @@ if prompt := st._bottom.chat_input("请输入你的问题"):
     with st.sidebar.expander(label="输出数据",expanded=False):
         st.write(resp_data)
         st.write(st.session_state.messages)
-
-    
-    # if not resp.get("Success"):
-    #     st.chat_message("assistant").write("对不起😵‍💫, 请求ID: %s, 错误码: %s, 错误信息: %s" %
-    #                 (resp.get("RequestId"), resp.get("Code"), resp.get("Message")))
-    # else:
-    #     st.chat_message("assistant").write(resp.get("Data", {}).get("Text"))
-    #     doc_references = resp.get("Data", {}).get("DocReferences")
-    #     if doc_references is not None and len(doc_references) > 0:
-    #         st.chat_message("assistant").write("Doc ref: %s" % doc_references[0].get("DocName"))
-    #     st.session_state.messages.append({"role": "assistant", "content": resp.get("Data", {}).get("Text")})
