@@ -4,16 +4,19 @@ from streamlit.components.v1 import html
 import fitz  # PyMuPDF
 from pptx import Presentation
 from docx import Document
-import os
+# import os
 import io
-from dotenv import load_dotenv
+# from dotenv import load_dotenv
 import broadscope_bailian
 
-load_dotenv()
+# load_dotenv()
 
-accessKeyId = os.getenv("ALIYUN_ACCESS_KEY");
-accessKeySecret = os.getenv("ALIYUN_ACCESS_Key_SECRET");
-agentKey = os.getenv("ALIYUN_AGENT_KEY");
+# accessKeyId = os.getenv("ALIYUN_ACCESS_KEY");
+# accessKeySecret = os.getenv("ALIYUN_ACCESS_Key_SECRET");
+# agentKey = os.getenv("ALIYUN_AGENT_KEY");
+accessKeyId = st.secrets["ALIYUN_ACCESS_KEY"];
+accessKeySecret = st.secrets["ALIYUN_ACCESS_Key_SECRET"];
+agentKey = st.secrets["ALIYUN_AGENT_KEY"];
 # app_id = os.getenv("ALIYUN_APP_ID");
 
 def clear_chat_history():
@@ -28,9 +31,11 @@ with st.sidebar:
     with st.expander("参数设置"):
         model = st.radio(label="选择模型",options=["通义千问","通义千问Max"],help="Max更智能，但费用较高")
         if model == "通义千问Max":
-            app_id = os.getenv("ALIYUN_APP_ID_MAX")
+            # app_id = os.getenv("ALIYUN_APP_ID_MAX")
+            app_id = st.secrets["ALIYUN_APP_ID_MAX"]
         else:
-            app_id = os.getenv("ALIYUN_APP_ID")
+            # app_id = os.getenv("ALIYUN_APP_ID")
+            app_id = st.secrets["ALIYUN_APP_ID"]
 
         temperature = st.slider(label="温度",min_value=0.01,max_value=1.0, step=0.1, help="数值越大，创造力越大但相应的可能会编撰")
     labels = st.multiselect(label="知识标签",options=["产品","准入"])
