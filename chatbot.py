@@ -29,7 +29,7 @@ if "messages" not in st.session_state:
 
 with st.sidebar:
     with st.expander("参数设置"):
-        model = st.radio(label="选择模型",options=["通义千问","通义千问Max"],help="Max更智能，但费用较高")
+        model = st.radio(label="选择模型",options=["通义千问Max","通义千问"],help="Max更智能，但费用较高")
         if model == "通义千问Max":
             # app_id = os.getenv("ALIYUN_APP_ID_MAX")
             app_id = st.secrets["ALIYUN_APP_ID_MAX"]
