@@ -25,8 +25,8 @@ accessKeySecret = st.secrets["ALIYUN_ACCESS_Key_SECRET"]
 agentKey = st.secrets["ALIYUN_AGENT_KEY"]
 dashscope.api_key=st.secrets["DASHSCOPE_API_KEY"]
 
-# Retrieve the existing application
-assistant_id = st.secrets["ALIYUN_APP_ID_APP"]
+st.title("💬 Sales AI Buddy")
+st.caption("🚀 派得 - 智能销售伙伴")
 
 with st.sidebar:
     with st.expander("参数设置"):
@@ -44,26 +44,36 @@ with st.sidebar:
 
 def clear_chat_history():
     if model == "智能陪练":
-        st.session_state["messages"] = [{"role":"assistant","content":"请选择一个场景开始模拟对话练习，回复数字开始。对话过程中，回复【结束】中止模拟练习。\n\n**1** - BRCA阴性且HRD阳性"}]
+        st.session_state["messages"] = [{"role":"assistant","content":"请选择一个场景，回复数字开始模拟对话练习。对话过程中，回复【结束】中止模拟练习。\n1. BRCA阴性且HRD阳性; \n2. 联合贝伐珠单抗治疗; \n3. 没有使用贝伐珠单抗; \n4. 随机场景"}]
     elif model == "企业知识库":
         st.session_state["messages"] = [{"role":"assistant","content":"有什么问题想问我？"}]
     else:
         st.session_state["messages"] = [{"role":"assistant","content":"嘿，我有什么可以帮忙的？"}]
     st.session_state["thread"] = None
-        
+    st.session_state["label"] = True
+
 st.sidebar.button(label="清空聊天记录",on_click=clear_chat_history)
+
+def get_app_response(prompt):
+    if st.session_state["thread"]:
+        resps = Application.call(app_id=app_id,
+                                prompt=prompt,
+                                stream=True,
+                                session_id = st.session_state["thread"]
+                                )
+    else:
+        resps = Application.call(app_id=app_id,
+                                prompt=prompt,
+                                stream=True
+                                )
+    return resps
 
 if "messages" not in st.session_state:
     clear_chat_history()
 
-st.title("💬 Sales AI Buddy")
-st.caption("🚀 派得 - 智能销售伙伴")
-
-
 for msg in st.session_state.messages:
     st.chat_message(msg["role"]).markdown(msg["content"])
 
-st._bottom.info("AI可能会犯错误，请核实重要信息",icon="🚨")
 if prompt := st._bottom.chat_input("请输入..."):
     st.session_state.messages.append({"role": "user", "content": prompt})
     with st.chat_message("user"):
@@ -101,18 +111,8 @@ if prompt := st._bottom.chat_input("请输入..."):
 
     with st.chat_message("assistant"):
         if model == "智能陪练":
-            if st.session_state["thread"]:
-                resps = Application.call(app_id=app_id,
-                                        prompt=prompt,
-                                        stream=True,
-                                        session_id = st.session_state["thread"]
-                                        )
-            else:
-                resps = Application.call(app_id=app_id,
-                                        prompt=prompt,
-                                        stream=True
-                                        )
-                
+            resps = get_app_response(prompt)
+
             with st.spinner("CPU飞速运转中..."):
                 with st.empty():
                     new_text = ""
@@ -122,7 +122,7 @@ if prompt := st._bottom.chat_input("请输入..."):
                             st.markdown(new_text)
                         else:
                             st.warning(resp.output)
-                
+                    st.session_state["thread"] = resp.output.session_id
         else:
             client = broadscope_bailian.AccessTokenClient(accessKeyId, accessKeySecret, agentKey);
             token = client.get_token();
