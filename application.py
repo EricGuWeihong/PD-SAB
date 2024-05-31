@@ -44,7 +44,7 @@ with st.sidebar:
 
 def clear_chat_history():
     if model == "智能陪练":
-        st.session_state["messages"] = [{"role":"assistant","content":"让我们开始拜访练习吧！指定练习内容或者回复‘继续’开始随机场景对话"}]
+        st.session_state["messages"] = [{"role":"assistant","content":"请选择一个场景开始模拟对话练习，回复数字开始。对话过程中，回复【结束】中止模拟练习。\n\n**1** - BRCA阴性且HRD阳性"}]
     elif model == "企业知识库":
         st.session_state["messages"] = [{"role":"assistant","content":"有什么问题想问我？"}]
     else:
@@ -61,7 +61,7 @@ st.caption("🚀 派得 - 智能销售伙伴")
 
 
 for msg in st.session_state.messages:
-    st.chat_message(msg["role"]).write(msg["content"])
+    st.chat_message(msg["role"]).markdown(msg["content"])
 
 st._bottom.info("AI可能会犯错误，请核实重要信息",icon="🚨")
 if prompt := st._bottom.chat_input("请输入..."):
@@ -122,7 +122,6 @@ if prompt := st._bottom.chat_input("请输入..."):
                             st.markdown(new_text)
                         else:
                             st.warning(resp.output)
-            st.sidebar.write(st.session_state["thread"])
                 
         else:
             client = broadscope_bailian.AccessTokenClient(accessKeyId, accessKeySecret, agentKey);
